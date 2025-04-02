@@ -129,3 +129,99 @@ personal-finance-tracker/
 │
 └── .gitignore # Specifies intentionally untracked files
 └── README.md # This file
+
+
+## Component/Module Descriptions
+
+### Frontend (`src/`)
+
+#### `App.tsx`
+- Serves as the root component, setting up the main layout (header, main content area).
+- Initializes the WebSocket connection to the backend.
+- Renders the `Dashboard` component.
+
+#### `components/Dashboard/Dashboard.tsx`
+- The main view of the application.
+- Fetches accounts and transactions data from the backend API.
+- Manages loading and error states for data fetching.
+- Renders various dashboard sections (Net Worth, Balances, Quick Actions, etc.).
+- Renders child components like `SpendingChart`, `BudgetList`, `RatioBudgetDisplay`, and `AddTransactionModal`.
+- Calculates overall metrics like Net Worth.
+- Handles opening/closing the transaction modal and refreshing data.
+
+#### `components/Dashboard/SpendingChart.tsx`
+- **Props:** `data` (processed spending data by category).
+- Uses `Recharts` to display a Donut chart visualizing spending breakdown for the current month.
+- Includes custom labels and tooltips.
+
+#### `components/AddTransactionModal.tsx`
+- **Props:** `isOpen`, `onClose`, `onTransactionAdded`, `accounts`, `transactionToEdit`.
+- Provides a form within a modal for adding new transactions or editing existing ones.
+- Handles user input for description, amount, date, category, account, and ratio category.
+- Submits data to the backend API (`POST` or `PUT /api/transactions`).
+- Performs basic validation and displays errors.
+
+#### `components/Budgeting/BudgetList.tsx`
+- Fetches budget data (categories, budgeted amounts, actual spending) from the backend API (`GET /api/budgets`).
+- Displays each budget category with its progress towards the budgeted amount using a `ProgressBar` sub-component.
+- Shows spent vs budgeted amounts and remaining/overspent value.
+- Includes an `AddBudgetForm` sub-component to create new budget categories.
+- Handles editing budget amounts and deleting budget categories.
+
+#### `components/Budgeting/RatioBudgetDisplay.tsx`
+- **Props:** `transactions`, `isLoading`, `error`.
+- Calculates the spending breakdown for Needs, Wants, and Savings based on the `ratio_category` assigned to transactions for the current month.
+- Calculates total income for the month to establish percentages.
+- Displays the actual spending vs target ratios (50/30/20) using `RatioProgressBar` sub-components.
+
+#### `types.ts`
+- Defines shared TypeScript interfaces for data structures like `Account`, `Transaction`, `BudgetData`.
+
+### Backend (`backend/`)
+
+#### `server.js`
+- Initializes the Express application and HTTP server.
+- Sets up middleware (CORS, JSON parsing).
+- Establishes the PostgreSQL database connection pool.
+- Configures and initializes Socket.IO for real-time communication.
+- Mounts the API route handlers from the `routes/` directory.
+- Starts the server listening on the configured port.
+
+#### `routes/accounts.js`
+- Defines API endpoints related to accounts (e.g., `GET /api/accounts` to fetch all accounts).
+- Interacts with the `accounts` table in the database.
+- (Currently missing POST/PUT/DELETE implementations).
+
+#### `routes/transactions.js`
+- Defines API endpoints for transactions:
+  - `GET /api/transactions`: Fetch recent transactions (joined with account names).
+  - `POST /api/transactions`: Add a new transaction, updating the relevant account balance within a database transaction.
+  - `PUT /api/transactions/:id`: Update an existing transaction, correctly adjusting old and new account balances within a database transaction.
+  - `DELETE /api/transactions/:id`: Delete a transaction, reverting its impact on the account balance within a database transaction.
+- Interacts with `transactions` and `accounts` tables.
+
+#### `routes/budgets.js`
+- Defines API endpoints for budgets:
+  - `GET /api/budgets`: Fetch all budget categories along with calculated actual spending for the current month.
+  - `POST /api/budgets`: Create a new budget category.
+  - `PUT /api/budgets/:id`: Update the amount for an existing budget category.
+  - `DELETE /api/budgets/:id`: Delete a budget category.
+- Interacts with `budgets` and `transactions` tables.
+
+## Features in Detail
+
+### Dashboard & Visualization
+- **Net Worth Calculation:** Sums balances across accounts (treating credit accounts appropriately).
+- **Account Balances:** Lists current balances for configured accounts.
+- **Recent Transactions:** Shows a filterable/paginated list of recent income/expenses with details.
+- **Spending Chart:** Provides an immediate visual breakdown of expense categories for the current month using a Donut chart.
+
+### Transaction Management
+- **Manual Entry:** A clear modal form allows adding detailed transaction information.
+- **Editing:** Existing transactions can be modified via the same modal.
+- **Deletion:** Transactions can be removed with confirmation.
+- **Balance Adjustments:** Backend logic ensures account balances are correctly updated when transactions are added, edited, or deleted.
+
+### Budgeting System
+- **Category Budgets:** Users define monthly spending limits for custom categories. Progress bars visually track spending against these limits, changing color (green/yellow/red) based on status.
+- **Ratio Budgeting (50/30/20):** Expenses can be optionally classified as Needs, Wants, or Savings. A dedicated display shows the percentage of monthly income/spending allocated to each ratio category compared to common targets.
