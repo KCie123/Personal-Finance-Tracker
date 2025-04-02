@@ -90,3 +90,42 @@ The **Personal Finance Tracker** application aims to make personal finance manag
 4. Open your browser and navigate to `http://localhost:3000` (or the port specified by Create React App).
 
 ## Project Structure
+personal-finance-tracker/
+│
+├── backend/ # Node.js/Express Backend
+│ ├── node_modules/
+│ ├── routes/ # API route handlers (accounts, transactions, budgets)
+│ │ ├── accounts.js
+│ │ ├── transactions.js
+│ │ └── budgets.js
+│ ├── .env # Environment variables (DB connection, port) - Not committed
+│ ├── package.json
+│ ├── package-lock.json
+│ └── server.js # Main Express server setup
+│
+├── frontend/ # React Frontend
+│ ├── node_modules/
+│ ├── public/ # Static assets (index.html, icons)
+│ ├── src/ # React source code
+│ │ ├── components/ # UI components
+│ │ │ ├── Dashboard/
+│ │ │ │ ├── Dashboard.tsx
+│ │ │ │ └── SpendingChart.tsx
+│ │ │ ├── Budgeting/
+│ │ │ │ ├── BudgetList.tsx
+│ │ │ │ └── RatioBudgetDisplay.tsx
+│ │ │ └── AddTransactionModal.tsx
+│ │ ├── App.css # Minimal global styles
+│ │ ├── App.tsx # Main application component/layout
+│ │ ├── index.css # Tailwind directives, base styles
+│ │ ├── index.tsx # React entry point
+│ │ └── types.ts # TypeScript interfaces (Account, Transaction, etc.)
+│ ├── .env.development # API URL for local dev
+│ ├── .env.production # API URL for deployed build
+│ ├── package.json
+│ ├── package-lock.json
+│ ├── tailwind.config.js # Tailwind configuration
+│ └── tsconfig.json # TypeScript configuration
+│
+└── .gitignore # Specifies intentionally untracked files
+└── README.md # This file
