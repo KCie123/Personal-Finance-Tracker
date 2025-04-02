@@ -90,6 +90,7 @@ The **Personal Finance Tracker** application aims to make personal finance manag
 4. Open your browser and navigate to `http://localhost:3000` (or the port specified by Create React App).
 
 ## Project Structure
+```
 personal-finance-tracker/
 │
 ├── backend/ # Node.js/Express Backend
@@ -129,7 +130,7 @@ personal-finance-tracker/
 │
 └── .gitignore # Specifies intentionally untracked files
 └── README.md # This file
-
+```
 
 ## Component/Module Descriptions
 
